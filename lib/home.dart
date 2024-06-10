@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:savingmoney/controllers/category_controller.dart';
+import 'package:savingmoney/controllers/mission_controller.dart';
+import 'package:savingmoney/controllers/transaction_controller.dart';
 import 'package:savingmoney/pages/History.dart';
 import 'package:savingmoney/themes/theme.dart';
 
+import 'notification_helper.dart';
 import 'pages/LandingPage.dart';
 import 'pages/Profile.dart';
 
@@ -17,12 +22,26 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final _categoryC = Get.put(CategoryController());
+  final _missionC = Get.put(MissionController());
+  final _transactionC = Get.put(TransactionController());
+  final NotificationHelper notifyHelper = NotificationHelper();
+
   late Widget currentScreen;
   int currentTab = 0;
 
   @override
   void initState() {
     super.initState();
+    // notifyHelper = NotificationHelper();
+    // notifyHelper.requestIOSPermissions();
+    setState(() {
+      _categoryC.fetchCategories();
+      _missionC.fetchMissions();
+      _transactionC.fetchIncomes();
+      _transactionC.fetchSpendings();
+      // notifyHelper.scheduledNotification();
+    });
     currentScreen = widget.initialScreen;
     currentTab = widget.onTabChanged;
   }
@@ -58,7 +77,7 @@ class _HomeState extends State<Home> {
                   IconButton(
                     onPressed: () {
                       setState(() {
-                        currentScreen = const LandingPage();
+                        currentScreen = const Landingpage();
                         currentTab = 0;
                       });
                     },

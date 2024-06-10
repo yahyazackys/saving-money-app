@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:savingmoney/controllers/saving_controller.dart';
+import 'package:savingmoney/controllers/mission_controller.dart';
+import 'package:savingmoney/controllers/category_controller.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../models/category_model.dart';
 import '../themes/theme.dart';
 
 class MissionFormWidget extends StatefulWidget {
@@ -13,10 +15,10 @@ class MissionFormWidget extends StatefulWidget {
 }
 
 class _MissionFormWidgetState extends State<MissionFormWidget> {
-  final SavingController taskC = Get.put(SavingController());
+  final missionC = Get.put(MissionController());
+  final categoryC = Get.put(CategoryController());
 
-  String? selectedValue;
-  final List<String> categories = ['Option 1', 'Option 2', 'Option 3'];
+  CategoryModel? selectedCategory;
   DateTime today = DateTime.now();
   DateTime? selectedTargetDate;
   DateTime? selectedEndDate;
@@ -25,7 +27,7 @@ class _MissionFormWidgetState extends State<MissionFormWidget> {
   void initState() {
     super.initState();
     selectedTargetDate = null;
-    selectedEndDate = null;
+    selectedCategory = null;
   }
 
   void _onStartDaySelected(DateTime day, DateTime focusedDay) {
@@ -87,11 +89,44 @@ class _MissionFormWidgetState extends State<MissionFormWidget> {
     if (pickedDate != null) {
       setState(() {
         selectedTargetDate = pickedDate;
-        // Menggunakan format yang diharapkan oleh sistem (YYYY-MM-DD)
-        taskC.targetDate.text =
+        missionC.targetDate.text =
             DateFormat('yyyy-MM-dd').format(selectedTargetDate!);
-        print('Selected Start Date: ${taskC.targetDate.text}');
+        print('Selected Start Date: ${missionC.targetDate.text}');
       });
+    }
+  }
+
+  void _submitMission() async {
+    if (selectedCategory == null) {
+      Get.snackbar(
+        "Error",
+        "Please Input The Data!",
+        margin: const EdgeInsets.all(10),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
+    try {
+      await missionC.addMission(
+        title: missionC.title.text,
+        targetAmount: missionC.amount.text,
+        targetDate: missionC.targetDate.text,
+        categoryId: missionC.categoryId.text,
+        // description: missionC.description.text,
+      );
+    } catch (e) {
+      print('Error submitting mission: $e');
+      Get.snackbar(
+        "Error",
+        "An error occurred while submitting the mission.",
+        margin: const EdgeInsets.all(10),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -108,7 +143,7 @@ class _MissionFormWidgetState extends State<MissionFormWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Amount",
+              "Title",
               style: blackTextStyle.copyWith(
                 fontSize: 15,
               ),
@@ -133,8 +168,52 @@ class _MissionFormWidgetState extends State<MissionFormWidget> {
                 ],
               ),
               child: TextField(
-                // controller: taskC.title,
-                style: subTextStyle.copyWith(
+                controller: missionC.title,
+                style: blackTextStyle.copyWith(
+                  fontSize: 13,
+                ),
+                decoration: InputDecoration(
+                  hintStyle: subTextStyle.copyWith(
+                    fontSize: 13,
+                  ),
+                  hintText: 'title...',
+                  iconColor: Color(0xff8D92A3),
+                  border: InputBorder.none,
+                  contentPadding: EdgeInsets.all(15),
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            Text(
+              "Target Amount",
+              style: blackTextStyle.copyWith(
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: const EdgeInsets.symmetric(
+                vertical: 4,
+              ),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(100),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.shade300,
+                    blurRadius: 2,
+                    offset: const Offset(0, 0),
+                  ),
+                ],
+              ),
+              child: TextField(
+                controller: missionC.amount,
+                style: blackTextStyle.copyWith(
                   fontSize: 13,
                 ),
                 decoration: InputDecoration(
@@ -175,15 +254,17 @@ class _MissionFormWidgetState extends State<MissionFormWidget> {
                   color: whiteColor,
                 ),
                 padding: const EdgeInsets.only(
-                  left: 20,
-                  // right: 40,
-                ),
+                    // left: 20,
+                    ),
                 child: Row(
                   children: [
-                    SizedBox(
+                    Container(
+                      padding: const EdgeInsets.only(
+                        left: 20,
+                      ),
                       width: MediaQuery.of(context).size.width * 0.70,
                       child: TextField(
-                        // controller: taskC.startDate,
+                        controller: missionC.targetDate,
                         enabled: false,
                         decoration: InputDecoration(
                           hintText: selectedTargetDate != null
@@ -244,102 +325,115 @@ class _MissionFormWidgetState extends State<MissionFormWidget> {
               ),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    hint: Text(
-                      'Category...',
+                child: Obx(() {
+                  if (categoryC.isLoading == true) {
+                    return CircularProgressIndicator();
+                  } else if (categoryC.categoryList.isEmpty) {
+                    return Text(
+                      'No categories available',
                       style: subTextStyle.copyWith(
                         fontSize: 13,
                       ),
-                    ),
-                    value: selectedValue,
-                    isExpanded: true,
-                    icon: Icon(
-                      Icons.arrow_drop_down,
-                      color: blackColor,
-                    ),
-                    style: blackTextStyle.copyWith(
-                      fontSize: 13,
-                    ),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedValue = newValue;
-                      });
-                    },
-                    items: categories.map(
-                      (String option) {
-                        return DropdownMenuItem<String>(
-                          value: option,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              vertical: 10,
-                            ),
-                            child: Text(
-                              option,
-                              style: subTextStyle.copyWith(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
+                    );
+                  } else {
+                    return DropdownButtonHideUnderline(
+                      child: DropdownButton<CategoryModel>(
+                        hint: Text(
+                          'Select Category...',
+                          style: subTextStyle.copyWith(
+                            fontSize: 13,
+                          ),
+                        ),
+                        value: selectedCategory,
+                        isExpanded: true,
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          color: blackColor,
+                        ),
+                        style: blackTextStyle.copyWith(
+                          fontSize: 13,
+                        ),
+                        onChanged: (CategoryModel? newValue) {
+                          setState(() {
+                            selectedCategory = newValue;
+                            missionC.categoryId.text = newValue!.id.toString();
+                          });
+                        },
+                        items: categoryC.categoryList
+                            .map((CategoryModel category) {
+                          return DropdownMenuItem<CategoryModel>(
+                            value: category,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                vertical: 10,
+                              ),
+                              child: Text(
+                                category.name,
+                                style: blackTextStyle.copyWith(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
-                          ),
-                        );
-                      },
-                    ).toList(),
-                  ),
-                ),
+                          );
+                        }).toList(),
+                      ),
+                    );
+                  }
+                }),
               ),
             ),
             const SizedBox(
               height: 20,
             ),
-            Text(
-              "Description",
-              style: blackTextStyle.copyWith(
-                fontSize: 15,
-              ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.symmetric(
-                vertical: 4,
-              ),
-              decoration: BoxDecoration(
-                color: whiteColor,
-                borderRadius: BorderRadius.circular(100),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 2,
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: TextField(
-                // controller: taskC.description,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                style: subTextStyle.copyWith(
-                  fontSize: 13,
-                ),
-                decoration: InputDecoration(
-                  hintStyle: subTextStyle.copyWith(
-                    fontSize: 13,
-                  ),
-                  hintText: 'Description',
-                  iconColor: Color(0xff8D92A3),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(15),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
+            // Text(
+            //   "Information",
+            //   style: blackTextStyle.copyWith(
+            //     fontSize: 15,
+            //   ),
+            // ),
+            // const SizedBox(
+            //   height: 8,
+            // ),
+            // Container(
+            //   width: MediaQuery.of(context).size.width,
+            //   padding: const EdgeInsets.symmetric(
+            //     vertical: 4,
+            //   ),
+            //   decoration: BoxDecoration(
+            //     color: whiteColor,
+            //     borderRadius: BorderRadius.circular(100),
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: Colors.grey.shade300,
+            //         blurRadius: 2,
+            //         offset: const Offset(0, 0),
+            //       ),
+            //     ],
+            //   ),
+            //   child: TextField(
+            //     controller: missionC.description,
+            //     maxLines: null,
+            //     keyboardType: TextInputType.multiline,
+            //     style: blackTextStyle.copyWith(
+            //       fontSize: 13,
+            //     ),
+            //     decoration: InputDecoration(
+            //       hintStyle: subTextStyle.copyWith(
+            //         fontSize: 13,
+            //       ),
+            //       hintText: 'Information...',
+            //       iconColor: Color(0xff8D92A3),
+            //       border: InputBorder.none,
+            //       contentPadding: EdgeInsets.all(15),
+            //     ),
+            //   ),
+            // ),
+            // const SizedBox(
+            //   height: 20,
+            // ),
             InkWell(
-              onTap: null,
+              onTap: _submitMission,
               child: Container(
                 decoration: BoxDecoration(
                   color: primaryColor,

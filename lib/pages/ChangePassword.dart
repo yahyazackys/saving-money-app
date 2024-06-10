@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 
+import '../controllers/user_controller.dart';
 import '../themes/theme.dart';
 
 class Changepassword extends StatefulWidget {
@@ -13,6 +15,8 @@ class Changepassword extends StatefulWidget {
 class _ChangepasswordState extends State<Changepassword> {
   @override
   Widget build(BuildContext context) {
+    final userC = Get.put(UserController());
+
     return Scaffold(
       backgroundColor: lightColor,
       appBar: AppBar(
@@ -36,7 +40,7 @@ class _ChangepasswordState extends State<Changepassword> {
           ),
         ),
         elevation: 0,
-        toolbarHeight: 100,
+        toolbarHeight: 60,
         automaticallyImplyLeading: false,
       ),
       body: SafeArea(
@@ -59,7 +63,7 @@ class _ChangepasswordState extends State<Changepassword> {
                 ),
                 Center(
                   child: Text(
-                    "Enter your old password and make sure to fill in the new password correctly.",
+                    "Enter your current password and make sure to fill in the new password correctly.",
                     style: subTextStyle.copyWith(
                       fontSize: 14,
                       fontWeight: FontWeight.w900,
@@ -72,7 +76,7 @@ class _ChangepasswordState extends State<Changepassword> {
                   height: 30,
                 ),
                 Text(
-                  "Old Password",
+                  "Current Password",
                   style: blackTextStyle.copyWith(
                     fontSize: 15,
                   ),
@@ -97,13 +101,16 @@ class _ChangepasswordState extends State<Changepassword> {
                     ],
                   ),
                   child: TextField(
-                    // controller: userC.newPasswordUser,
+                    controller: userC.currentPasswordUser,
                     style: blackTextStyle.copyWith(
                       fontSize: 12,
                     ),
                     decoration: InputDecoration(
-                      hintStyle: const TextStyle(fontSize: 13),
-                      hintText: 'Old Password',
+                      hintStyle: const TextStyle(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      hintText: 'Current Password...',
                       iconColor: const Color(0xff8D92A3),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
@@ -155,13 +162,77 @@ class _ChangepasswordState extends State<Changepassword> {
                     ],
                   ),
                   child: TextField(
-                    // controller: userC.newPasswordUser,
+                    controller: userC.newPasswordUser,
                     style: blackTextStyle.copyWith(
                       fontSize: 12,
                     ),
                     decoration: InputDecoration(
-                      hintStyle: const TextStyle(fontSize: 13),
-                      hintText: 'New Password',
+                      hintStyle: const TextStyle(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      hintText: 'New Password...',
+                      iconColor: const Color(0xff8D92A3),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                        horizontal: 30,
+                      ),
+                      suffixIcon: Container(
+                        margin: const EdgeInsets.only(
+                          right: 12,
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
+                        child: Icon(
+                          Icons.lock,
+                          color: blackColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Confirm New Password",
+                  style: blackTextStyle.copyWith(
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(
+                  height: 8,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: whiteColor,
+                    borderRadius: BorderRadius.circular(100),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.shade300,
+                        blurRadius: 2,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: userC.confirmPasswordUser,
+                    style: blackTextStyle.copyWith(
+                      fontSize: 12,
+                    ),
+                    decoration: InputDecoration(
+                      hintStyle: const TextStyle(
+                        fontSize: 12,
+                        fontStyle: FontStyle.italic,
+                      ),
+                      hintText: 'Confirm New Password...',
                       iconColor: const Color(0xff8D92A3),
                       border: InputBorder.none,
                       contentPadding: const EdgeInsets.symmetric(
@@ -187,22 +258,37 @@ class _ChangepasswordState extends State<Changepassword> {
                 const SizedBox(
                   height: 30,
                 ),
-                InkWell(
-                  onTap: null,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: primaryColor,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
-                    ),
-                    child: Center(
-                      child: Text(
-                        'Save',
-                        style: whiteTextStyle.copyWith(
-                            fontWeight: FontWeight.bold),
+                Obx(
+                  () => InkWell(
+                    onTap: (() {
+                      userC.editPassword();
+                    }),
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 18,
+                        horizontal: 20,
                       ),
+                      decoration: BoxDecoration(
+                        color: primaryColor,
+                        borderRadius: BorderRadius.circular(100),
+                        border: Border.all(
+                          width: 1,
+                          color: subColor,
+                        ),
+                      ),
+                      child: userC.isLoading == true
+                          ? CircularProgressIndicator(
+                              color: whiteColor,
+                            )
+                          : Text(
+                              "Save",
+                              style: whiteTextStyle.copyWith(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w900,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                     ),
                   ),
                 ),

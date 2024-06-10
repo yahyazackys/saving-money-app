@@ -1,0 +1,417 @@
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:savingmoney/controllers/chart_controller.dart';
+// import 'package:savingmoney/themes/theme.dart';
+// import 'package:savingmoney/widgets/income_form_widget.dart';
+// import 'package:savingmoney/widgets/mission_card_widget.dart';
+// import 'package:savingmoney/widgets/mission_form_widget.dart';
+// import 'package:savingmoney/widgets/spending_form_widget.dart';
+// import 'package:sp_util/sp_util.dart';
+// import 'package:syncfusion_flutter_charts/charts.dart';
+
+// import '../controllers/mission_controller.dart';
+// import '../controllers/transaction_controller.dart';
+// import '../models/chart_model.dart';
+
+// class Testing extends StatefulWidget {
+//   const Testing({super.key});
+
+//   @override
+//   State<Testing> createState() => _TestingState();
+// }
+
+// class _TestingState extends State<Testing> {
+//   final missionC = Get.put(MissionController());
+//   final tC = Get.put(TransactionController());
+//   final chartC = Get.put(ChartController());
+
+//   int currentTab = 0;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     chartC.fetchChartData();
+//     setState(() {
+//       // print(chartC.chartData.value.income);
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: lightColor,
+//       body: Stack(
+//         children: [
+//           Container(
+//             padding: const EdgeInsets.symmetric(
+//               // horizontal: 20,
+//               vertical: 60,
+//             ),
+//             width: MediaQuery.of(context).size.width,
+//             height: MediaQuery.of(context).size.height,
+//             decoration: BoxDecoration(
+//               color: primaryColor,
+//             ),
+//             child: SafeArea(
+//               child: Column(
+//                 crossAxisAlignment: CrossAxisAlignment.start,
+//                 children: [
+//                   Center(
+//                     child: Text(
+//                       SpUtil.getString("name_userUpdated").toString() == ""
+//                           ? "Hi, " +
+//                               SpUtil.getString("name_user").toString() +
+//                               " Welcome Back!"
+//                           : "Hi, " +
+//                               SpUtil.getString("name_userUpdated").toString() +
+//                               " Welcome Back!",
+//                       style: whiteTextStyle.copyWith(
+//                         fontSize: 24,
+//                         fontWeight: FontWeight.w700,
+//                       ),
+//                     ),
+//                   ),
+//                   const SizedBox(height: 10),
+//                   Center(
+//                     child: Text(
+//                       "Total Amount",
+//                       style: subTextStyle.copyWith(
+//                         fontSize: 12,
+//                         fontWeight: FontWeight.w700,
+//                       ),
+//                     ),
+//                   ),
+//                   const SizedBox(height: 6),
+//                   Obx(() {
+//                     double totalAmount = tC.totalAmount;
+//                     return Center(
+//                       child: Text(
+//                         totalAmount < 0
+//                             ? "- RM ${(-totalAmount).toStringAsFixed(0).replaceAllMapped(
+//                                   RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+//                                   (Match match) => '${match[1]},',
+//                                 )}"
+//                             : "RM ${totalAmount.toStringAsFixed(0).replaceAllMapped(
+//                                   RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+//                                   (Match match) => '${match[1]},',
+//                                 )}",
+//                         style: whiteTextStyle.copyWith(
+//                           fontSize: 24,
+//                           fontWeight: FontWeight.w700,
+//                         ),
+//                       ),
+//                     );
+//                   }),
+//                   const SizedBox(height: 40),
+//                   missionC.missionList.isEmpty
+//                       ? Container()
+//                       : Padding(
+//                           padding: const EdgeInsets.only(left: 30),
+//                           child: Text(
+//                             "Mission Goals",
+//                             style: whiteTextStyle.copyWith(
+//                               fontSize: 20,
+//                               fontWeight: FontWeight.w700,
+//                             ),
+//                             textAlign: TextAlign.start,
+//                           ),
+//                         ),
+//                   const SizedBox(height: 10),
+//                   Obx(() {
+//                     if (missionC.missionList.isEmpty) {
+//                       return Container();
+//                     } else {
+//                       return SingleChildScrollView(
+//                         scrollDirection: Axis.horizontal,
+//                         child: Row(
+//                           children: missionC.missionList.map((mission) {
+//                             return GestureDetector(
+//                               onTap: () {
+//                                 // Get.to(DetailPriorityTask(
+//                                 //   priority: task,
+//                                 // ));
+//                               },
+//                               child: MissionCardWidget(mission: mission),
+//                             );
+//                           }).toList(),
+//                         ),
+//                       );
+//                     }
+//                   }),
+//                 ],
+//               ),
+//             ),
+//           ),
+//           SingleChildScrollView(
+//             scrollDirection: Axis.vertical,
+//             child: Container(
+//               margin: EdgeInsets.only(
+//                 top: 450,
+//               ),
+//               child: Stack(
+//                 children: [
+//                   Positioned(
+//                     child: Container(
+//                       width: MediaQuery.of(context).size.width,
+//                       height: MediaQuery.of(context).size.height,
+//                       padding: const EdgeInsets.only(
+//                         top: 100,
+//                         bottom: 60,
+//                       ),
+//                       margin: const EdgeInsets.only(
+//                         top: 100,
+//                       ),
+//                       decoration: BoxDecoration(
+//                         color: lightColor,
+//                         borderRadius: const BorderRadius.only(
+//                           topLeft: Radius.circular(60),
+//                           topRight: Radius.circular(60),
+//                         ),
+//                       ),
+//                       child: SingleChildScrollView(
+//                         physics: const NeverScrollableScrollPhysics(),
+//                         child: Column(
+//                           crossAxisAlignment: CrossAxisAlignment.start,
+//                           children: [
+//                             Padding(
+//                               padding:
+//                                   const EdgeInsets.symmetric(horizontal: 30),
+//                               child: Text(
+//                                 "Savings Menu",
+//                                 style: blackTextStyle.copyWith(
+//                                   fontSize: 20,
+//                                   fontWeight: FontWeight.w700,
+//                                 ),
+//                               ),
+//                             ),
+//                             const SizedBox(height: 10),
+//                             Padding(
+//                               padding: const EdgeInsets.symmetric(
+//                                 horizontal: 30,
+//                               ),
+//                               child: Column(
+//                                 children: [
+//                                   Row(
+//                                     mainAxisAlignment:
+//                                         MainAxisAlignment.spaceBetween,
+//                                     children: [
+//                                       GestureDetector(
+//                                         onTap: () {
+//                                           setState(() {
+//                                             currentTab = 0;
+//                                           });
+//                                         },
+//                                         child: Container(
+//                                           decoration: BoxDecoration(
+//                                             borderRadius:
+//                                                 BorderRadius.circular(80),
+//                                             border: Border.all(
+//                                               color: primaryColor,
+//                                             ),
+//                                             color: currentTab == 0
+//                                                 ? primaryColor
+//                                                 : Colors.transparent,
+//                                           ),
+//                                           padding: const EdgeInsets.symmetric(
+//                                             horizontal: 30,
+//                                             vertical: 8,
+//                                           ),
+//                                           child: Text(
+//                                             'Income',
+//                                             style: currentTab == 0
+//                                                 ? whiteTextStyle.copyWith(
+//                                                     fontWeight: FontWeight.bold,
+//                                                     fontSize: 16,
+//                                                   )
+//                                                 : primaryTextStyle.copyWith(
+//                                                     fontWeight: FontWeight.bold,
+//                                                     fontSize: 16,
+//                                                   ),
+//                                           ),
+//                                         ),
+//                                       ),
+//                                       GestureDetector(
+//                                         onTap: () {
+//                                           setState(() {
+//                                             currentTab = 1;
+//                                           });
+//                                         },
+//                                         child: Container(
+//                                           decoration: BoxDecoration(
+//                                             borderRadius:
+//                                                 BorderRadius.circular(80),
+//                                             border: Border.all(
+//                                               color: primaryColor,
+//                                             ),
+//                                             color: currentTab == 1
+//                                                 ? primaryColor
+//                                                 : Colors.transparent,
+//                                           ),
+//                                           padding: const EdgeInsets.symmetric(
+//                                             horizontal: 30,
+//                                             vertical: 8,
+//                                           ),
+//                                           child: Text(
+//                                             'Spending',
+//                                             style: currentTab == 1
+//                                                 ? whiteTextStyle.copyWith(
+//                                                     fontWeight: FontWeight.bold,
+//                                                     fontSize: 16,
+//                                                   )
+//                                                 : primaryTextStyle.copyWith(
+//                                                     fontWeight: FontWeight.bold,
+//                                                     fontSize: 16,
+//                                                   ),
+//                                           ),
+//                                         ),
+//                                       ),
+//                                       GestureDetector(
+//                                         onTap: () {
+//                                           setState(() {
+//                                             currentTab = 2;
+//                                           });
+//                                         },
+//                                         child: Container(
+//                                           decoration: BoxDecoration(
+//                                             borderRadius:
+//                                                 BorderRadius.circular(80),
+//                                             border: Border.all(
+//                                               color: primaryColor,
+//                                             ),
+//                                             color: currentTab == 2
+//                                                 ? primaryColor
+//                                                 : Colors.transparent,
+//                                           ),
+//                                           padding: const EdgeInsets.symmetric(
+//                                             horizontal: 30,
+//                                             vertical: 8,
+//                                           ),
+//                                           child: Text(
+//                                             'Mission',
+//                                             style: currentTab == 2
+//                                                 ? whiteTextStyle.copyWith(
+//                                                     fontWeight: FontWeight.bold,
+//                                                     fontSize: 16,
+//                                                   )
+//                                                 : primaryTextStyle.copyWith(
+//                                                     fontWeight: FontWeight.bold,
+//                                                     fontSize: 16,
+//                                                   ),
+//                                           ),
+//                                         ),
+//                                       ),
+//                                     ],
+//                                   ),
+//                                   const SizedBox(
+//                                       height:
+//                                           20), // Tambahkan SizedBox untuk jarak antar widget
+//                                   currentTab == 0
+//                                       ? const IncomeFormWidget()
+//                                       : Container(),
+//                                   currentTab == 1
+//                                       ? const SpendingFormWidget()
+//                                       : Container(),
+//                                   currentTab == 2
+//                                       ? const MissionFormWidget()
+//                                       : Container(),
+//                                 ],
+//                               ),
+//                             ),
+//                           ],
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                   Container(
+//                     width: MediaQuery.of(context).size.width,
+//                     // color: whiteColor,
+//                     child: Obx(() {
+//                       if (chartC.isLoading.value) {
+//                         return const Center(child: CircularProgressIndicator());
+//                       } else {
+//                         return Center(
+//                           child: SingleChildScrollView(
+//                             child: Container(
+//                               width: MediaQuery.of(context).size.width * 0.75,
+//                               // height: 300,
+//                               decoration: BoxDecoration(
+//                                 color: Color(0xFF0C1F63),
+//                                 borderRadius: BorderRadius.circular(30),
+//                               ),
+//                               child: Column(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 crossAxisAlignment: CrossAxisAlignment.center,
+//                                 children: [
+//                                   SizedBox(
+//                                     height: 180,
+//                                     child: SfCartesianChart(
+//                                       // title: const ChartTitle(
+//                                       //   text: 'Monthly Analysis',
+//                                       // ),
+//                                       legend: const Legend(
+//                                         isVisible: true,
+//                                         textStyle: TextStyle(
+//                                           color: Colors.white,
+//                                         ),
+//                                       ),
+//                                       primaryXAxis: const CategoryAxis(
+//                                         // title: AxisTitle(
+//                                         //   text: 'Month',
+//                                         // ),
+//                                         labelStyle: TextStyle(
+//                                           color: Colors.white,
+//                                         ),
+//                                       ),
+//                                       primaryYAxis: const NumericAxis(
+//                                         // title: AxisTitle(
+//                                         //   text: 'Amount (RM)',
+//                                         // ),
+//                                         labelStyle: TextStyle(
+//                                           color: Colors.white,
+//                                         ),
+//                                       ),
+//                                       series: <LineSeries>[
+//                                         LineSeries<IncomeData, String>(
+//                                           dataSource: chartC.incomeData,
+//                                           xValueMapper: (IncomeData data, _) =>
+//                                               data.monthYear,
+//                                           yValueMapper: (IncomeData data, _) =>
+//                                               data.amount,
+//                                           name: 'Income',
+//                                           markerSettings: const MarkerSettings(
+//                                             isVisible: true,
+//                                           ),
+//                                         ),
+//                                         LineSeries<SpendingData, String>(
+//                                           dataSource: chartC.spendingData,
+//                                           xValueMapper:
+//                                               (SpendingData data, _) =>
+//                                                   data.monthYear,
+//                                           yValueMapper:
+//                                               (SpendingData data, _) =>
+//                                                   data.amount,
+//                                           name: 'Spending',
+//                                           markerSettings: const MarkerSettings(
+//                                             isVisible: true,
+//                                           ),
+//                                         ),
+//                                       ],
+//                                     ),
+//                                   )
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+//                         );
+//                       }
+//                     }),
+//                   ),
+//                 ],
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

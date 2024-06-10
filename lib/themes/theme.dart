@@ -10,26 +10,26 @@ Color redColor = const Color(0xFFE02424);
 Color greenColor = const Color(0xFF36BE07);
 Color subColor = const Color(0xFFAAAAAA);
 
-TextStyle whiteTextStyle = GoogleFonts.raleway(
+TextStyle whiteTextStyle = GoogleFonts.poppins(
   color: whiteColor,
 );
 
-TextStyle blackTextStyle = GoogleFonts.raleway(
+TextStyle blackTextStyle = GoogleFonts.poppins(
   color: blackColor,
 );
 
-TextStyle primaryTextStyle = GoogleFonts.raleway(
+TextStyle primaryTextStyle = GoogleFonts.poppins(
   color: primaryColor,
 );
 
-TextStyle subTextStyle = GoogleFonts.raleway(
+TextStyle subTextStyle = GoogleFonts.poppins(
   color: subColor,
 );
 
-TextStyle greenTextStyle = GoogleFonts.raleway(
+TextStyle greenTextStyle = GoogleFonts.poppins(
   color: greenColor,
 );
 
-TextStyle redTextStyle = GoogleFonts.raleway(
+TextStyle redTextStyle = GoogleFonts.poppins(
   color: redColor,
 );
