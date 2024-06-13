@@ -15,13 +15,9 @@ class _HistoryState extends State<History> {
   final tC = Get.put(TransactionController());
 
   String formatTime(String dateTimeString) {
-    // Parse the string to DateTime assuming it's in UTC
     DateTime dateTime = DateTime.parse(dateTimeString).toUtc();
-    // Convert UTC time to local time
     dateTime = dateTime.toLocal();
-    // Create a DateFormat
     final DateFormat dateFormat = DateFormat('h:mm a');
-    // Format the DateTime to string
     return dateFormat.format(dateTime);
   }
 
@@ -280,6 +276,9 @@ class _HistoryState extends State<History> {
                                           ),
                                         ),
                                         Text(
+                                          // spending.mission != null
+                                          //     ? spending.mission!.title
+                                          //     :
                                           spending.description,
                                           style: blackTextStyle.copyWith(
                                             fontWeight: FontWeight.w700,

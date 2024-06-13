@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:savingmoney/config/config.dart';
+import 'package:savingmoney/controllers/transaction_controller.dart';
 import 'package:savingmoney/home.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:sp_util/sp_util.dart';
 import 'package:savingmoney/pages/LandingPage.dart';
 import 'package:savingmoney/pages/Login.dart';
 import 'package:savingmoney/themes/theme.dart';
+
+import 'mission_controller.dart';
 
 class AuthController extends GetxController {
   TextEditingController name = TextEditingController();
@@ -25,6 +28,9 @@ class AuthController extends GetxController {
   RxBool isObescure = true.obs;
   RxBool isObescure2 = true.obs;
   RxString token = ''.obs;
+
+  final missionC = Get.put(MissionController());
+  final transactionC = Get.put(TransactionController());
 
   void clearInputan() {
     name.clear();
@@ -181,7 +187,15 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       clearInputan();
-      // menghapus data/cache dsb yg tersimpan sementara di hp
+      missionC.missionList.clear();
+      missionC.clearInputan();
+
+      transactionC.clearInputan();
+      transactionC.incomeList.clear();
+      transactionC.spendingList.clear();
+      transactionC.totalIncome.value = 0.0;
+      transactionC.totalSpending.value = 0.0;
+
       SpUtil.clear();
 
       // tampilkan snackbar pesan berhasil

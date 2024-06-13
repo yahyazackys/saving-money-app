@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:savingmoney/controllers/mission_controller.dart';
+// import 'package:savingmoney/controllers/mission_controller.dart';
 import 'package:savingmoney/models/mission_model.dart';
 import 'package:sp_util/sp_util.dart';
 import 'package:http/http.dart' as http;
@@ -20,7 +20,7 @@ class MissionCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tC = Get.put(TransactionController());
-    final missionC = Get.put(MissionController());
+    // final missionC = Get.put(MissionController());
     RxList<TransactionModel> spendingByMissionList = RxList<TransactionModel>();
     RxDouble totalSpendingByMission = 0.0.obs;
 
@@ -56,9 +56,9 @@ class MissionCardWidget extends StatelessWidget {
       }
     }
 
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   fetchSpendingByMission();
-    // });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      fetchSpendingByMission();
+    });
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.55,
@@ -179,7 +179,7 @@ class MissionCardWidget extends StatelessWidget {
               ),
               Obx(() {
                 return Text(
-                  "RM ${missionC.totalSpendingByMission.toStringAsFixed(0).replaceAllMapped(
+                  "RM ${totalSpendingByMission.toStringAsFixed(0).replaceAllMapped(
                         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
                         (Match match) => '${match[1]},',
                       )}",

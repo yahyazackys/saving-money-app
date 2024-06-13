@@ -59,8 +59,8 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
       try {
         await transactionC.addSpending(
           amount: transactionC.amountSpending.text,
-          categoryId: transactionC.categoryId.text,
-          missionId: transactionC.missionId.text,
+          categoryId: selectedCategory?.id.toString() ?? "",
+          missionId: selectedMission?.id.toString() ?? "",
           description: transactionC.descriptionSpending.text,
         );
       } catch (e) {
@@ -131,9 +131,9 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                   fontSize: 13,
                 ),
                 hintText: 'Amount...',
-                iconColor: Color(0xff8D92A3),
+                iconColor: const Color(0xff8D92A3),
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.all(15),
+                contentPadding: const EdgeInsets.all(15),
               ),
             ),
           ),
@@ -280,7 +280,7 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Obx(() {
                       if (categoryC.isLoading == true) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (categoryC.categoryList.isEmpty) {
                         return Text(
                           'No categories available',
@@ -297,7 +297,10 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                                 fontSize: 13,
                               ),
                             ),
-                            value: selectedCategory,
+                            value: categoryC.categoryList
+                                    .contains(selectedCategory)
+                                ? selectedCategory
+                                : null,
                             isExpanded: true,
                             icon: Icon(
                               Icons.arrow_drop_down,
@@ -318,7 +321,7 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                               return DropdownMenuItem<CategoryModel>(
                                 value: category,
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 10,
                                   ),
                                   child: Text(
@@ -357,10 +360,10 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Obx(() {
                       if (missionC.isLoading == true) {
-                        return CircularProgressIndicator();
+                        return const CircularProgressIndicator();
                       } else if (missionC.missionList.isEmpty) {
                         return Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             vertical: 15,
                             // horizontal: 10,
                           ),
@@ -380,7 +383,10 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                                 fontSize: 13,
                               ),
                             ),
-                            value: selectedMission,
+                            value:
+                                missionC.missionList.contains(selectedMission)
+                                    ? selectedMission
+                                    : null,
                             isExpanded: true,
                             icon: Icon(
                               Icons.arrow_drop_down,
@@ -401,7 +407,7 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                               return DropdownMenuItem<MissionModel>(
                                 value: mission,
                                 child: Container(
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                     vertical: 10,
                                   ),
                                   child: Text(
@@ -460,9 +466,9 @@ class _SpendingFormWidgetState extends State<SpendingFormWidget> {
                   fontSize: 13,
                 ),
                 hintText: 'Information...',
-                iconColor: Color(0xff8D92A3),
+                iconColor: const Color(0xff8D92A3),
                 border: InputBorder.none,
-                contentPadding: EdgeInsets.all(15),
+                contentPadding: const EdgeInsets.all(15),
               ),
             ),
           ),

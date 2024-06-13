@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
-import 'package:savingmoney/controllers/mission_controller.dart';
 import 'package:savingmoney/notification_helper.dart';
 import 'package:savingmoney/pages/Splash.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:sp_util/sp_util.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

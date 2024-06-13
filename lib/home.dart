@@ -33,17 +33,18 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    // notifyHelper = NotificationHelper();
-    // notifyHelper.requestIOSPermissions();
-    setState(() {
-      _categoryC.fetchCategories();
-      _missionC.fetchMissions();
-      _transactionC.fetchIncomes();
-      _transactionC.fetchSpendings();
-      // notifyHelper.scheduledNotification();
-    });
     currentScreen = widget.initialScreen;
     currentTab = widget.onTabChanged;
+    initializeData();
+  }
+
+  void initializeData() async {
+    await _categoryC.fetchCategories();
+    await _missionC.fetchMissions();
+    await _transactionC.fetchIncomes();
+    await _transactionC.fetchSpendings();
+    await notifyHelper.scheduledNotification();
+    setState(() {}); // Update UI after data is fetched
   }
 
   @override

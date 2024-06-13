@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:savingmoney/controllers/chart_controller.dart';
 import 'package:savingmoney/notification_helper.dart';
 import 'package:savingmoney/themes/theme.dart';
@@ -44,10 +43,14 @@ class _LandingpageState extends State<Landingpage> {
   void initState() {
     super.initState();
     chartC.fetchChartData();
-    // missionC.fetchMissions();
-    setState(() {
-      notifyHelper.scheduledNotification();
-    });
+    tC.fetchIncomes();
+    tC.fetchSpendings();
+    initializeData();
+  }
+
+  void initializeData() async {
+    await notifyHelper.scheduledNotification();
+    setState(() {});
   }
 
   @override
@@ -70,19 +73,23 @@ class _LandingpageState extends State<Landingpage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Center(
-                      child: Text(
-                        SpUtil.getString("name_userUpdated").toString() == ""
-                            ? "Hi, " +
-                                SpUtil.getString("name_user").toString() +
-                                " Welcome Back!"
-                            : "Hi, " +
-                                SpUtil.getString("name_userUpdated")
-                                    .toString() +
-                                " Welcome Back!",
-                        style: whiteTextStyle.copyWith(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20,
+                      ),
+                      child: Center(
+                        child: Text(
+                          SpUtil.getString("name_userUpdated").toString() == ""
+                              ? "Hi, " +
+                                  SpUtil.getString("name_user").toString()
+                              : "Hi, " +
+                                  SpUtil.getString("name_userUpdated")
+                                      .toString(),
+                          style: whiteTextStyle.copyWith(
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
@@ -117,65 +124,65 @@ class _LandingpageState extends State<Landingpage> {
                         ),
                       );
                     }),
-                    InkWell(
-                      onTap: () {
-                        notifyHelper.scheduleNotification();
-                        // notifyHelper.displayNotification(
-                        //   title: 'yahya gantenk',
-                        //   body: 'irfan jelek, danil jelek',
-                        // );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(80),
-                          border: Border.all(
-                            color: primaryColor,
-                          ),
-                          color: greenColor,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 26,
-                          vertical: 8,
-                        ),
-                        child: Text(
-                          'Incomefud',
-                          style: whiteTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        notifyHelper.scheduledNotification();
-                        // notifyHelper.displayNotification(
-                        //   title: 'yahya gantenk',
-                        //   body: 'irfan jelek, danil jelek',
-                        // );
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(80),
-                          border: Border.all(
-                            color: primaryColor,
-                          ),
-                          color: greenColor,
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 26,
-                          vertical: 8,
-                        ),
-                        child: Text(
-                          'Incomefudawdwadd',
-                          style: whiteTextStyle.copyWith(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
+                    // InkWell(
+                    //   onTap: () {
+                    //     notifyHelper.scheduleNotification();
+                    //     // notifyHelper.displayNotification(
+                    //     //   title: 'yahya gantenk',
+                    //     //   body: 'irfan jelek, danil jelek',
+                    //     // );
+                    //   },
+                    //   child: Container(
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(80),
+                    //       border: Border.all(
+                    //         color: primaryColor,
+                    //       ),
+                    //       color: greenColor,
+                    //     ),
+                    //     padding: const EdgeInsets.symmetric(
+                    //       horizontal: 26,
+                    //       vertical: 8,
+                    //     ),
+                    //     child: Text(
+                    //       'Incomefud',
+                    //       style: whiteTextStyle.copyWith(
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 16,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // InkWell(
+                    //   onTap: () {
+                    //     notifyHelper.scheduledNotification();
+                    //     // notifyHelper.displayNotification(
+                    //     //   title: 'yahya gantenk',
+                    //     //   body: 'irfan jelek, danil jelek',
+                    //     // );
+                    //   },
+                    //   child: Container(
+                    //     decoration: BoxDecoration(
+                    //       borderRadius: BorderRadius.circular(80),
+                    //       border: Border.all(
+                    //         color: primaryColor,
+                    //       ),
+                    //       color: greenColor,
+                    //     ),
+                    //     padding: const EdgeInsets.symmetric(
+                    //       horizontal: 26,
+                    //       vertical: 8,
+                    //     ),
+                    //     child: Text(
+                    //       'Incomefudawdwadd',
+                    //       style: whiteTextStyle.copyWith(
+                    //         fontWeight: FontWeight.bold,
+                    //         fontSize: 16,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 40),
                     missionC.missionList.isEmpty
                         ? Container()
                         : Padding(

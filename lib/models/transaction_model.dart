@@ -1,3 +1,6 @@
+// import 'package:savingmoney/models/mission_model.dart';
+// import 'category_model.dart';
+
 class TransactionModel {
   TransactionModel({
     required this.id,
@@ -5,6 +8,8 @@ class TransactionModel {
     required this.type,
     required this.amount,
     required this.description,
+    // required this.category,
+    // required this.mission,
     required this.categoryId,
     required this.missionId,
     required this.createdAt,
@@ -16,6 +21,8 @@ class TransactionModel {
   String type;
   double amount;
   String description;
+  // CategoryModel? category;
+  // MissionModel? mission;
   int categoryId;
   int missionId;
   String createdAt;
@@ -28,6 +35,8 @@ class TransactionModel {
         type: json["type"] ?? "",
         amount: double.tryParse(json['amount'].toString()) ?? 0.0,
         description: json["description"] ?? "",
+        // category: CategoryModel.fromJson(json["category"]),
+        // mission: MissionModel.fromJson(json["mission"]),
         categoryId: json["category_id"] ?? 0,
         missionId: json["missions_id"] ?? 0,
         createdAt: json["created_at"] ?? "",
@@ -42,6 +51,8 @@ class TransactionModel {
         "description": description,
         "category_id": categoryId,
         "missions_id": missionId,
+        // "category": category?.toJson(),
+        // "mission": mission?.toJson(),
         "created_at": createdAt,
         "updated_at": updatedAt,
       };
